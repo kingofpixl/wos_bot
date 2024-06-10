@@ -9,7 +9,7 @@ def get_discord_response(user_input: str, user=None) -> str:
     if lowered == '':
         return "well, you\'re awfully silent..."
     elif 'hello' in lowered:
-        return 'Hello there <@${message.author.id}>'
+        return f'Hello there {user.mention}'
     elif 'how are you' in lowered:
         return 'Good, thanks!'
     elif 'bye' in lowered:
@@ -17,7 +17,7 @@ def get_discord_response(user_input: str, user=None) -> str:
     elif 'roll dice' in lowered:
         return f'You rolled: {randint(1, 6)}'
     elif 'steam' in lowered:
-        get_game('divinity')
+        return get_game(lowered[6:], user)
     else:
         return choice([
             'I do not understand...',

@@ -16,19 +16,18 @@ intents.message_content = True # NOQA (no quality assurance)
 client: Client = Client(intents=intents)
 
 # STEP 2: MESSAGE FUNCTIONALITY
-async def send_message(message: Message, user_message: str) -> None:
+async def send_message(message: Message, user_message: str, username) -> None:
     if not user_message:
         print('(Message was empty because intents were not enabled probably)')
         return
 
     is_private = user_message[0] == '?'
-    server = 
 
     if is_private:
         user_message = user_message[1:]
 
     try:
-        response: str = get_discord_response(user_message)
+        response: str = get_discord_response(user_message, user=username)
         if is_private:
             await message.author.send(response)
         else:
@@ -49,12 +48,12 @@ async def on_message(message: Message) -> None:
     if message.author == client.user:
         return
 
-    username: str = str(message.author)
+    username = message.author
     user_message: str = message.content
     channel: str = str(message.channel)
 
-    print(f'[{channel}] {username}: "{user_message}")')
-    await send_message(message, user_message)
+    print(f'[{channel}] {str(username)}: "{user_message}")')
+    await send_message(message, user_message, username)
 
 # STEP 5: MAIN ENTRY POINT
 def main() -> None:
