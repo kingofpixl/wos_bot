@@ -1,6 +1,6 @@
 from random import choice, randint
 
-from steam_api_calls import get_user_profile, get_game
+from steam_api_calls import get_user_profile, get_game, recently_played_games
 
 
 def get_discord_response(user_input: str, user=None) -> str:
@@ -18,6 +18,8 @@ def get_discord_response(user_input: str, user=None) -> str:
         return f'You rolled: {randint(1, 6)}'
     elif 'steam' in lowered:
         return get_game(lowered[6:], user)
+    elif 'recently played' in lowered:
+        return recently_played_games(lowered[16:])
     else:
         return choice([
             'I do not understand...',
