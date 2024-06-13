@@ -1,5 +1,5 @@
 from random import choice, randint
-
+from discord import Embed
 from steam_api_calls import get_user_profile, get_game, recently_played_games
 
 
@@ -20,6 +20,8 @@ def get_discord_response(user_input: str, user=None) -> str:
         return get_game(lowered[6:], user)
     elif 'recently played' in lowered:
         return recently_played_games(lowered[16:])
+    elif 'embed' in lowered:
+        return 'no embed yet'
     else:
         return choice([
             'I do not understand...',

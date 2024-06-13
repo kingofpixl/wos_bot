@@ -2,7 +2,7 @@ import os
 
 from typing import Final
 from dotenv import load_dotenv
-from discord import Intents, Client, Message, Member
+from discord import Intents, Client, Message
 from responses import get_discord_response
 
 # STEP 0: LOAD OUR TOKEN FROM SOMEWHERE SAFE
@@ -51,8 +51,9 @@ async def on_message(message: Message) -> None:
     username = message.author
     user_message: str = message.content
     channel: str = str(message.channel)
+    server = message.guild
 
-    print(f'[{channel}] {str(username)}: "{user_message}")')
+    print(f'[{channel}] {str(username)}: "{user_message} on {server}")')
     await send_message(message, user_message, username)
 
 # STEP 5: MAIN ENTRY POINT
