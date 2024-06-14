@@ -2,7 +2,8 @@ import os
 
 from typing import Final
 from dotenv import load_dotenv
-from discord import Intents, Client, Message
+from discord import Intents, Message, Embed
+from discord.ext import commands
 from responses import get_discord_response
 
 # STEP 0: LOAD OUR TOKEN FROM SOMEWHERE SAFE
@@ -11,12 +12,12 @@ DISCORD_TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
 PERSONAL_SERVER_ID = os.getenv('PERSONAL_SERVER_ID')
 
 # STEP 1: BOT SETUP
-intents: Intents = Intents.default()
+intents = Intents.default()
 intents.message_content = True # NOQA (no quality assurance)
-client: Client = Client(intents=intents)
+client = commands.Bot(command_prefix='!', intents=intents)
 
 # STEP 2: MESSAGE FUNCTIONALITY
-async def send_message(message: Message, user_message: str, username) -> None:
+async def send_message(message: Message, user_message: str, username, server) -> None:
     if not user_message:
         print('(Message was empty because intents were not enabled probably)')
         return
@@ -27,7 +28,7 @@ async def send_message(message: Message, user_message: str, username) -> None:
         user_message = user_message[1:]
 
     try:
-        response: str = get_discord_response(user_message, user=username)
+        response: str = get_discord_response(user_message, user=username, server=server)
         if is_private:
             await message.author.send(response)
         else:
@@ -44,7 +45,7 @@ async def on_ready() -> None:
 
 # STEP 4: HANDLING INCOMING MESSAGES
 @client.event
-async def on_message(message: Message) -> None:
+async def on_message(message) -> None:
     if message.author == client.user:
         return
 
@@ -53,8 +54,19 @@ async def on_message(message: Message) -> None:
     channel: str = str(message.channel)
     server = message.guild
 
+    if message.content.startswith("embed dnd"):
+        dnd_class = message.content[10:]
+        embed = Embed(title=dnd_class, url="http://dnd5e.wikidot.com/" + dnd_class, description='class info', color=0xFFA500)
+        await message.channel.send(embed=embed)
+        return
+    elif message.content.startswith("embed bb"):
+        embed = Embed(title="Business Base", url="https://businessbase.ca/", description='we at the business base', color=0xFFA500)
+        await message.channel.send(embed=embed)
+        return
+
     print(f'[{channel}] {str(username)}: "{user_message} on {server}")')
-    await send_message(message, user_message, username)
+    await send_message(message, user_message, username, server)
+
 
 # STEP 5: MAIN ENTRY POINT
 def main() -> None:

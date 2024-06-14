@@ -1,9 +1,9 @@
 from random import choice, randint
-from discord import Embed
+
 from steam_api_calls import get_user_profile, get_game, recently_played_games
 
 
-def get_discord_response(user_input: str, user=None) -> str:
+def get_discord_response(user_input: str, user, server) -> str:
     lowered: str = user_input.lower()
 
     if lowered == '':
@@ -17,11 +17,11 @@ def get_discord_response(user_input: str, user=None) -> str:
     elif 'roll dice' in lowered:
         return f'You rolled: {randint(1, 6)}'
     elif 'steam' in lowered:
-        return get_game(lowered[6:], user)
+        return get_game(user, lowered[6:])
     elif 'recently played' in lowered:
         return recently_played_games(lowered[16:])
-    elif 'embed' in lowered:
-        return 'no embed yet'
+    elif 'server' in lowered:
+        return f'{server} has the id: {server.id}'
     else:
         return choice([
             'I do not understand...',

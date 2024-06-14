@@ -12,7 +12,7 @@ def get_user_profile(username: str):
     print(user)
 
 
-def get_game(game_name: str, user):
+def get_game(user, game_name: str):
     game = steam.apps.search_games(term=game_name, country='CA')
     return f'hello {user.mention} {game['apps'][0]['name']} is {game['apps'][0]['price']}'
 
