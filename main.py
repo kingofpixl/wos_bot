@@ -1,9 +1,14 @@
 import os
+from datetime import datetime
 
 from typing import Final
+
+import aiocron
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
 from dotenv import load_dotenv
 from discord import Intents, Message, Embed
-from discord.ext import commands
+from discord.ext import commands, tasks
 from responses import get_discord_response
 
 # STEP 0: LOAD OUR TOKEN FROM SOMEWHERE SAFE
@@ -37,10 +42,21 @@ async def send_message(message: Message, user_message: str, username, server) ->
         print(e)
 
 
+async def weekly_message():
+    channel = client.get_channel(1249446467979182122)
+    await channel.send("howdy there partner")
+
+
 # STEP 3: HANDLING STARTUP FOR OUR BOT
 @client.event
 async def on_ready() -> None:
     print(f'{client.user} is now running!')
+
+    scheduler = AsyncIOScheduler()
+
+    scheduler.add_job(weekly_message, CronTrigger(day_of_week="sat", hour="20", minute="38", second="0"))
+
+    scheduler.start()
 
 
 # STEP 4: HANDLING INCOMING MESSAGES
@@ -67,10 +83,5 @@ async def on_message(message) -> None:
     print(f'[{channel}] {str(username)}: "{user_message} on {server}")')
     await send_message(message, user_message, username, server)
 
-
 # STEP 5: MAIN ENTRY POINT
-def main() -> None:
-    client.run(token=DISCORD_TOKEN)
-
-if __name__ == '__main__':
-    main()
+client.run(token=DISCORD_TOKEN)
