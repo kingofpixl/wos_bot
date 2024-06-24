@@ -8,7 +8,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from dotenv import load_dotenv
 from discord import Intents, Message, Embed
-from discord.ext import commands, tasks
+from discord.ext import commands
 from responses import get_discord_response
 
 # STEP 0: LOAD OUR TOKEN FROM SOMEWHERE SAFE
@@ -79,6 +79,7 @@ async def on_message(message) -> None:
         embed = Embed(title="Business Base", url="https://businessbase.ca/", description='we at the business base', color=0xFFA500)
         await message.channel.send(embed=embed)
         return
+
 
     print(f'[{channel}] {str(username)}: "{user_message} on {server}")')
     await send_message(message, user_message, username, server)
