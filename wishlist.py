@@ -1,17 +1,24 @@
 import requests
 from discord import Embed
+import os
+from steam_web_api import Steam
+from dotenv import load_dotenv
+
+load_dotenv()
 
 my_steam_id = 76561198099909736
-
+STEAM_KEY = os.getenv('STEAM_API_TOKEN')
 
 def get_my_wishlist(steam_id: str):
-
-    steam_user_wishlist_url = "https://store.steampowered.com/wishlist/profiles/" + steam_id + "/wishlistdata/"
+    # "http://api.steampowered.com/ISteamWebAPIUtil/GetSupportedAPIList/v1/?key=1234567890&steamid=000123000456"
+    steam_user_wishlist_url = "https://api.steampowered.com/IWishlistService/GetWishlist/v1/?steamid=" + steam_id
+    print(steam_user_wishlist_url)
     try:
         response = requests.get(steam_user_wishlist_url)
     except requests.exceptions.RequestException or requests.exceptions:
         return 'The Users Wishlist Is Private'
     json_response = response.json()
+    print(json_response)
 
     if len(json_response) == 1:
         return 'Please make sure your wishlist is set to public'
